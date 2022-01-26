@@ -1,15 +1,16 @@
 import { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import CircularProgressBar from './CircularProgressBar';
+
 export default function Pomodoro() {
   const [percentage, setPercentage] = useState(14);
   const timerIdRef = useRef(null);
   const [count, setCount] = useState(0);
   const [toStartTime, setToStartTime] = useState(30);
   const [startTime, setStartTime] = useState(30);
-  const [mode, setMode] = useState('Work');
+  const [buttonState, setButtonState] = useState('Work');
 
-  console.log(mode);
+  console.log(buttonState);
 
   // Start the timer
   const startHandler = () => {
@@ -85,19 +86,23 @@ export default function Pomodoro() {
           </button>
           <Container>
             <ButtonContainer>
-              <Button onClick={() => setMode('Work')} mode={mode} title="Work">
+              <Button
+                onClick={() => setButtonState('Work')}
+                buttonState={buttonState}
+                title="Work"
+              >
                 Work
               </Button>
               <Button
-                onClick={() => setMode('Short Break')}
-                mode={mode}
+                onClick={() => setButtonState('Short Break')}
+                buttonState={buttonState}
                 title="Short Break"
               >
                 Short Break
               </Button>
               <Button
-                onClick={() => setMode('Long Break')}
-                mode={mode}
+                onClick={() => setButtonState('Long Break')}
+                buttonState={buttonState}
                 title="Long Break"
               >
                 Long Break
@@ -141,7 +146,7 @@ const Background = styled.div`
   background-color: #ffffff;
 `;
 
-const Button = styled.div`
+const Button = styled.div<{ title: string; buttonState: string }>`
   width: 90px;
   height: 30px;
 
@@ -153,7 +158,7 @@ const Button = styled.div`
   cursor: pointer;
 
   background-color: ${(props) =>
-    props.mode === props.title ? `${'#8b3a3a'}` : `${'#b88d8d'}`};
+    props.buttonState === props.title ? `${'#8b3a3a'}` : `${'#b88d8d'}`};
 `;
 
 const ButtonContainer = styled.div`

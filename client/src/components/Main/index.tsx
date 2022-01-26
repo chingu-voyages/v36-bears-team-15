@@ -21,7 +21,7 @@ const navigation = [
   },
   {
     label: 'Pomodoro Timer',
-    href: '/pomodoro-timer',
+    href: '/pomodoro',
   },
 ];
 
