@@ -1,6 +1,8 @@
-import { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import CircularProgressBar from './CircularProgressBar';
+import Modal from 'react-modal';
+import Setting from './Setting';
 
 export default function Pomodoro() {
   const [percentage, setPercentage] = useState(14);
@@ -9,6 +11,7 @@ export default function Pomodoro() {
   const [toStartTime, setToStartTime] = useState(30);
   const [startTime, setStartTime] = useState(30);
   const [buttonState, setButtonState] = useState('Work');
+  const [showModal, setShowModal] = useState(false);
 
   console.log(buttonState);
 
@@ -85,6 +88,14 @@ export default function Pomodoro() {
             Set Start Time
           </button>
           <Container>
+            <Button onClick={() => setShowModal(true)}>Show Modal</Button>
+            <Modal
+              isOpen={showModal}
+              onRequestClose={() => setShowModal(false)}
+              style={modalStyles}
+            >
+              <Setting />
+            </Modal>
             <ButtonContainer>
               <Button
                 onClick={() => setButtonState('Work')}
@@ -114,7 +125,7 @@ export default function Pomodoro() {
               percentage={100 - percentage}
               time={currentTime(startTime - count)}
             />
-            <input
+            {/* <input
               id="progressInput"
               type="range"
               min="0"
@@ -122,13 +133,28 @@ export default function Pomodoro() {
               step="1"
               value={percentage}
               onChange={handleChangeEvent}
-            />
+            /> */}
+            <ButtonContainer>
+              <Button onClick={startHandler}>Start</Button>
+              <Button onClick={stopHandler}>Stop</Button>
+              <Button onClick={resetHandler}>Reset</Button>
+            </ButtonContainer>
           </Container>
         </div>
       </Background>
     </div>
   );
 }
+
+const modalStyles = {
+  content: {
+    width: '500px',
+    height: '500px',
+    margin: 'auto',
+    padding: '0',
+    borderRadius: '20px',
+  },
+};
 
 const Container = styled.div`
   margin-top: 200px;
