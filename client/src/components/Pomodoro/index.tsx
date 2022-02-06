@@ -9,8 +9,13 @@ export default function Pomodoro() {
   const timerIdRef = useRef(null);
   const [count, setCount] = useState(0);
   const [toStartTime, setToStartTime] = useState(30);
+
+  // Set Start Time
   const [startTime, setStartTime] = useState(30);
+
+  // Pomodoro State
   const [buttonState, setButtonState] = useState('Work');
+  // Toggle Modal
   const [showModal, setShowModal] = useState(false);
 
   console.log(buttonState);
@@ -64,9 +69,9 @@ export default function Pomodoro() {
     return `${padStartWith0(min, 2)}:${padStartWith0(sec, 2)}`;
   };
 
-  const handleChangeEvent = (e) => {
-    setPercentage(e.target.value);
-  };
+  // const handleChangeEvent = (e) => {
+  //   setPercentage(e.target.value);
+  // };
 
   useEffect(() => {
     setPercentage(((startTime - count) * 100) / startTime);
@@ -88,7 +93,7 @@ export default function Pomodoro() {
             Set Start Time
           </button>
           <Container>
-            <Button onClick={() => setShowModal(true)}>Show Modal</Button>
+            <Button onClick={() => setShowModal(true)}>Setting</Button>
             <Modal
               isOpen={showModal}
               onRequestClose={() => setShowModal(false)}
@@ -170,6 +175,7 @@ const Container = styled.div`
 
 const Background = styled.div`
   background-color: #ffffff;
+  font-family: 'system-ui';
 `;
 
 const Button = styled.div<{ title: string; buttonState: string }>`
@@ -177,10 +183,9 @@ const Button = styled.div<{ title: string; buttonState: string }>`
   height: 30px;
 
   color: #ffffff;
-  padding: auto;
   font-size: 12px;
-  padding-left: 20px;
-  padding-top: 7px;
+  text-align: center;
+  padding-top: 8px;
   cursor: pointer;
 
   background-color: ${(props) =>
