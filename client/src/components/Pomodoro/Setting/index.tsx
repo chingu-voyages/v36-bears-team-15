@@ -25,7 +25,7 @@ export default function Setting() {
           <NumberInputBox
             type="number"
             max="100"
-            min="0"
+            min="1"
             value={settingsInfo.pomodoroDuration}
             onChange={(e) => settingsInfo.setPomodoroDuration(e.target.value)}
           />
@@ -55,7 +55,7 @@ export default function Setting() {
           <NumberInputBox
             type="number"
             max="100"
-            min="0"
+            min="1"
             value={settingsInfo.longBreakInterval}
             onChange={(e) => settingsInfo.setLongBreakInterval(e.target.value)}
           />

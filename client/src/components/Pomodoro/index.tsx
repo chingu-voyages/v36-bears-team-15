@@ -12,7 +12,7 @@ export default function Pomodoro() {
 
   const timerIdRef = useRef(null);
 
-  // Count Time passed
+  // Count Time passed in seconds
   const [count, setCount] = useState(0);
 
   // Set Start Time
@@ -28,30 +28,51 @@ export default function Pomodoro() {
 
   const [isClicked, setIsClicked] = useState(false);
 
-  // const afterWorkHandler = () => {
-  //   setButtonState('Short Break');
-  //   setStartTime(shortBreakDuration);
-  //   setIsClicked(false);
-  // };
+  const [longBreakIntervalCount, setLongBreakIntervalCount] = useState(
+    settingsInfo.longBreakInterval,
+  );
 
   //console.log(buttonState);
   console.log(settingsInfo.shortBreakDuration);
 
   // Start the timer
   const startHandler = () => {
-    // if (timerIdRef.current) {
-    //   return;
-    // }
+    if (timerIdRef.current) {
+      return;
+    }
 
     timerIdRef.current = setInterval(() => setCount((c) => c + 1), 1000);
     setIsClicked(true);
   };
 
-  // Stop timer when it reaches 0
+  // Stop timer when it reaches 0 and change timer state
 
-  if (startTime - count <= 0) {
-    clearInterval(timerIdRef.current);
-  }
+  useEffect(() => {
+    if (startTime - count < 0) {
+      clearInterval(timerIdRef.current);
+      setCount(0);
+      setIsClicked(false);
+
+      if (timerState === 'Work') {
+        setTimerState('Short Break');
+        setIsClicked(false);
+      } else if (timerState === 'Short Break') {
+        if (longBreakIntervalCount !== 0) {
+          setTimerState('Work');
+          setIsClicked(false);
+          setLongBreakIntervalCount(longBreakIntervalCount - 1);
+        } else if (longBreakIntervalCount === 0) {
+          setTimerState('Long Break');
+          setIsClicked(false);
+        }
+        // After long break, change to work state and reset long break interval count
+      } else if (timerState === 'Long Break') {
+        setLongBreakIntervalCount(settingsInfo.longBreakInterval);
+        setTimerState('Work');
+        setIsClicked(false);
+      }
+    }
+  }, [count]);
 
   // Stop timer when the stop button is clicked
   const stopHandler = () => {
@@ -104,12 +125,26 @@ export default function Pomodoro() {
   useEffect(() => {
     if (timerState === 'Work') {
       setStartTime(60 * settingsInfo.pomodoroDuration);
+      setCount(0);
+      setPercentage(100);
+      stopHandler();
     } else if (timerState === 'Short Break') {
       setStartTime(60 * settingsInfo.shortBreakDuration);
+      setCount(0);
+      setPercentage(100);
+      stopHandler();
     } else if (timerState === 'Long Break') {
       setStartTime(60 * settingsInfo.longBreakDuration);
+      setCount(0);
+      setPercentage(100);
+      stopHandler();
     }
-  }, [timerState]);
+  }, [
+    timerState,
+    settingsInfo.pomodoroDuration,
+    settingsInfo.shortBreakDuration,
+    settingsInfo.longBreakDuration,
+  ]);
 
   return (
     <div>
@@ -131,6 +166,7 @@ export default function Pomodoro() {
             <Button onClick={() => settingsInfo.setShowModal(true)}>
               Setting
             </Button>
+            longBreakIntervalCount:{longBreakIntervalCount}
             <Modal
               isOpen={settingsInfo.showModal}
               onRequestClose={() => settingsInfo.setShowModal(false)}
@@ -168,19 +204,17 @@ export default function Pomodoro() {
               percentage={100 - percentage}
               time={currentTime(startTime - count)}
             />
-            {/* <input
-              id="progressInput"
-              type="range"
-              min="0"
-              max="100"
-              step="1"
-              value={percentage}
-              onChange={handleChangeEvent}
-            /> */}
             <ButtonContainer>
               {!isClicked && <Button onClick={startHandler}>Start</Button>}
               {isClicked && <Button onClick={stopHandler}>Stop</Button>}
               <Button onClick={resetHandler}>Reset</Button>
+              <Button
+                onClick={() =>
+                  setLongBreakIntervalCount(settingsInfo.longBreakInterval)
+                }
+              >
+                Long Break Interval Count Reset
+              </Button>
             </ButtonContainer>
           </Container>
         </div>
