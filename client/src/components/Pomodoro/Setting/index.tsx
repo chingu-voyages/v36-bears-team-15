@@ -1,16 +1,19 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
-export default function Setting() {
-  const [pomodoroDuration, setPomodoroDuration] = useState(25);
-  const [shortBreakDuration, setShortBreakDuration] = useState(5);
-  const [longBreakDuration, setLongBreakDuration] = useState(15);
-  const [longBreakInterval, setLongBreakInterval] = useState(4);
-  const [pomodoroCount, setPomodoroCount] = useState(4);
+import SettingsContext from 'pages/pomodoro/SettingsContext';
 
-  console.log(pomodoroDuration);
-  console.log(shortBreakDuration);
-  console.log(longBreakDuration);
-  console.log(longBreakInterval);
+export default function Setting() {
+  // const [pomodoroDuration, setPomodoroDuration] = useState(25);
+  // const [shortBreakDuration, setShortBreakDuration] = useState(5);
+  // const [longBreakDuration, setLongBreakDuration] = useState(15);
+  // const [longBreakInterval, setLongBreakInterval] = useState(4);
+
+  // console.log(pomodoroDuration);
+  // console.log(shortBreakDuration);
+  // console.log(longBreakDuration);
+  // console.log(longBreakInterval);
+
+  const settingsInfo = useContext(SettingsContext);
 
   return (
     <Container>
@@ -23,7 +26,8 @@ export default function Setting() {
             type="number"
             max="100"
             min="0"
-            onChange={(e) => setPomodoroDuration(e.target.value)}
+            value={settingsInfo.pomodoroDuration}
+            onChange={(e) => settingsInfo.setPomodoroDuration(e.target.value)}
           />
         </ItemContainer>
         <ItemContainer>
@@ -32,7 +36,8 @@ export default function Setting() {
             type="number"
             max="100"
             min="0"
-            onChange={(e) => setShortBreakDuration(e.target.value)}
+            value={settingsInfo.shortBreakDuration}
+            onChange={(e) => settingsInfo.setShortBreakDuration(e.target.value)}
           />
         </ItemContainer>
         <ItemContainer>
@@ -41,7 +46,8 @@ export default function Setting() {
             type="number"
             max="100"
             min="0"
-            onChange={(e) => setLongBreakDuration(e.target.value)}
+            value={settingsInfo.longBreakDuration}
+            onChange={(e) => settingsInfo.setLongBreakDuration(e.target.value)}
           />
         </ItemContainer>
         <ItemContainer>
@@ -50,11 +56,16 @@ export default function Setting() {
             type="number"
             max="100"
             min="0"
-            onClick={(e) => setLongBreakInterval(e.target.value)}
+            value={settingsInfo.longBreakInterval}
+            onChange={(e) => settingsInfo.setLongBreakInterval(e.target.value)}
           />
         </ItemContainer>
         <ItemContainer>
-          <SubmitButton type="submit" value="Submit" />
+          <SubmitButton
+            type="submit"
+            value="Submit"
+            onClick={() => settingsInfo.setShowModal(false)}
+          />
         </ItemContainer>
       </ItemsContainer>
     </Container>
@@ -63,10 +74,19 @@ export default function Setting() {
 
 const SubmitButton = styled.input`
   width: 100px;
-  height: 30px;
+  height: 40px;
   font-weight: bold;
   color: #374151;
   font-size: 18px;
+  border: 2px solid #1f187e;
+  border-radius: 5px;
+
+  &:hover {
+    cursor: pointer;
+  }
+  :active {
+    border: 3px solid #1f187e;
+  }
 `;
 
 const ItemContainer = styled.div`
@@ -75,9 +95,11 @@ const ItemContainer = styled.div`
   width: 400px;
   justify-content: space-between;
   margin: auto;
-  padding-top: 30px;
+
+  align-items: center;
   font-size: 20px;
-  height: 70px;
+  height: 40px;
+  margin-bottom: 40px;
 `;
 
 const NumberInputBox = styled.input`
@@ -95,7 +117,7 @@ const NumberInputBox = styled.input`
   border-radius: 5px;
   margin-left: 30px;
 
-  border: 1px solid #ccc;
+  border: 2px solid #1f187e;
 `;
 
 const ItemsContainer = styled.form`

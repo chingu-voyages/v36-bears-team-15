@@ -1,31 +1,50 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import CircularProgressBar from './CircularProgressBar';
 import Modal from 'react-modal';
 import Setting from './Setting';
+import SettingsContext from 'pages/pomodoro/SettingsContext';
 
 export default function Pomodoro() {
+  const settingsInfo = useContext(SettingsContext);
+  // Show remaining time in percentage
   const [percentage, setPercentage] = useState(14);
+
   const timerIdRef = useRef(null);
+
+  // Count Time passed
   const [count, setCount] = useState(0);
-  const [toStartTime, setToStartTime] = useState(30);
 
   // Set Start Time
+  const [toStartTime, setToStartTime] = useState(30);
+
+  // Save start Time temporary
   const [startTime, setStartTime] = useState(30);
 
   // Pomodoro State
-  const [buttonState, setButtonState] = useState('Work');
-  // Toggle Modal
-  const [showModal, setShowModal] = useState(false);
+  const [timerState, setTimerState] = useState('Work');
 
-  console.log(buttonState);
+  // Toggle Start / Stop Button
+
+  const [isClicked, setIsClicked] = useState(false);
+
+  // const afterWorkHandler = () => {
+  //   setButtonState('Short Break');
+  //   setStartTime(shortBreakDuration);
+  //   setIsClicked(false);
+  // };
+
+  //console.log(buttonState);
+  console.log(settingsInfo.shortBreakDuration);
 
   // Start the timer
   const startHandler = () => {
-    if (timerIdRef.current) {
-      return;
-    }
+    // if (timerIdRef.current) {
+    //   return;
+    // }
+
     timerIdRef.current = setInterval(() => setCount((c) => c + 1), 1000);
+    setIsClicked(true);
   };
 
   // Stop timer when it reaches 0
@@ -38,6 +57,7 @@ export default function Pomodoro() {
   const stopHandler = () => {
     clearInterval(timerIdRef.current);
     timerIdRef.current = 0;
+    setIsClicked(false);
   };
 
   // Reset the timer
@@ -54,6 +74,7 @@ export default function Pomodoro() {
     clearInterval(timerIdRef.current);
     timerIdRef.current = 0;
     setCount(0);
+    setIsClicked(false);
   };
 
   // Function to attach 0 in front of numbers less than 10
@@ -73,9 +94,22 @@ export default function Pomodoro() {
   //   setPercentage(e.target.value);
   // };
 
+  // Show timer by percentage
+
   useEffect(() => {
     setPercentage(((startTime - count) * 100) / startTime);
   }, [count, startTime]);
+
+  // Change Time of the timer when the state of timer is changed
+  useEffect(() => {
+    if (timerState === 'Work') {
+      setStartTime(60 * settingsInfo.pomodoroDuration);
+    } else if (timerState === 'Short Break') {
+      setStartTime(60 * settingsInfo.shortBreakDuration);
+    } else if (timerState === 'Long Break') {
+      setStartTime(60 * settingsInfo.longBreakDuration);
+    }
+  }, [timerState]);
 
   return (
     <div>
@@ -92,33 +126,37 @@ export default function Pomodoro() {
           <button onClick={() => setStartTime(toStartTime)}>
             Set Start Time
           </button>
+
           <Container>
-            <Button onClick={() => setShowModal(true)}>Setting</Button>
+            <Button onClick={() => settingsInfo.setShowModal(true)}>
+              Setting
+            </Button>
             <Modal
-              isOpen={showModal}
-              onRequestClose={() => setShowModal(false)}
+              isOpen={settingsInfo.showModal}
+              onRequestClose={() => settingsInfo.setShowModal(false)}
               style={modalStyles}
+              ariaHideApp={false}
             >
               <Setting />
             </Modal>
             <ButtonContainer>
               <Button
-                onClick={() => setButtonState('Work')}
-                buttonState={buttonState}
+                onClick={() => setTimerState('Work')}
+                timerState={timerState}
                 title="Work"
               >
                 Work
               </Button>
               <Button
-                onClick={() => setButtonState('Short Break')}
-                buttonState={buttonState}
+                onClick={() => setTimerState('Short Break')}
+                timerState={timerState}
                 title="Short Break"
               >
                 Short Break
               </Button>
               <Button
-                onClick={() => setButtonState('Long Break')}
-                buttonState={buttonState}
+                onClick={() => setTimerState('Long Break')}
+                timerState={timerState}
                 title="Long Break"
               >
                 Long Break
@@ -126,7 +164,7 @@ export default function Pomodoro() {
             </ButtonContainer>
             <CircularProgressBar
               strokeWidth={10}
-              squareSize={200}
+              squareSize={300}
               percentage={100 - percentage}
               time={currentTime(startTime - count)}
             />
@@ -140,8 +178,8 @@ export default function Pomodoro() {
               onChange={handleChangeEvent}
             /> */}
             <ButtonContainer>
-              <Button onClick={startHandler}>Start</Button>
-              <Button onClick={stopHandler}>Stop</Button>
+              {!isClicked && <Button onClick={startHandler}>Start</Button>}
+              {isClicked && <Button onClick={stopHandler}>Stop</Button>}
               <Button onClick={resetHandler}>Reset</Button>
             </ButtonContainer>
           </Container>
@@ -167,8 +205,8 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: #e2c5c5;
-  width: 400px;
-  height: 500px;
+  width: 700px;
+  height: 900px;
   margin: auto;
   padding-top: 100px;
 `;
@@ -179,26 +217,35 @@ const Background = styled.div`
 `;
 
 const Button = styled.div<{ title: string; buttonState: string }>`
-  width: 90px;
-  height: 30px;
+  width: 150px;
+  height: 50px;
 
   color: #ffffff;
-  font-size: 12px;
+  font-size: 20px;
   text-align: center;
-  padding-top: 8px;
   cursor: pointer;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+
+  font-weight: 400;
+
+  justify-content: center;
 
   background-color: ${(props) =>
-    props.buttonState === props.title ? `${'#8b3a3a'}` : `${'#b88d8d'}`};
+    props.timerState === props.title ? `${'#8b3a3a'}` : `${'#b88d8d'}`};
 `;
 
 const ButtonContainer = styled.div`
-  width: 400px;
+  width: 600px;
   height: 70px;
   display: flex;
   padding: auto;
+
   flex-direction: row;
   justify-content: space-between;
   padding-left: 50px;
   padding-right: 50px;
+
+  margin-top: 50px;
 `;

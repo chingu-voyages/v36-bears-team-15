@@ -40,7 +40,7 @@ const CircularProgressBar = (props) => {
 export default CircularProgressBar;
 
 const CircleText = styled.text`
-  font-size: 3em;
+  font-size: 4em;
   font-weight: bold;
   fill: red;
 `;
