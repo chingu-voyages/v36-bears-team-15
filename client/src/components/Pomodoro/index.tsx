@@ -52,6 +52,10 @@ export default function Pomodoro() {
       clearInterval(timerIdRef.current);
       setCount(0);
       setIsClicked(false);
+      if (settingsInfo.isAlarmOn) {
+        const audio = new Audio('./alarm.mp3');
+        audio.play();
+      }
 
       if (timerState === 'Work') {
         setTimerState('Short Break');
@@ -128,16 +132,25 @@ export default function Pomodoro() {
       setCount(0);
       setPercentage(100);
       stopHandler();
+      if (settingsInfo.isPomodoroAutoStartOn) {
+        startHandler();
+      }
     } else if (timerState === 'Short Break') {
       setStartTime(60 * settingsInfo.shortBreakDuration);
       setCount(0);
       setPercentage(100);
       stopHandler();
+      if (settingsInfo.isBreakAutoStartOn) {
+        startHandler();
+      }
     } else if (timerState === 'Long Break') {
       setStartTime(60 * settingsInfo.longBreakDuration);
       setCount(0);
       setPercentage(100);
       stopHandler();
+      if (settingsInfo.isBreakAutoStartOn) {
+        startHandler();
+      }
     }
   }, [
     timerState,
