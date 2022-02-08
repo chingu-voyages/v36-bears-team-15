@@ -166,7 +166,6 @@ export default function Pomodoro() {
             <Button onClick={() => settingsInfo.setShowModal(true)}>
               Setting
             </Button>
-            longBreakIntervalCount:{longBreakIntervalCount}
             <Modal
               isOpen={settingsInfo.showModal}
               onRequestClose={() => settingsInfo.setShowModal(false)}
@@ -204,6 +203,7 @@ export default function Pomodoro() {
               percentage={100 - percentage}
               time={currentTime(startTime - count)}
             />
+            Pomo Counter Until Long Break:{longBreakIntervalCount}
             <ButtonContainer>
               {!isClicked && <Button onClick={startHandler}>Start</Button>}
               {isClicked && <Button onClick={stopHandler}>Stop</Button>}
@@ -213,7 +213,7 @@ export default function Pomodoro() {
                   setLongBreakIntervalCount(settingsInfo.longBreakInterval)
                 }
               >
-                Long Break Interval Count Reset
+                Reset pomo counter
               </Button>
             </ButtonContainer>
           </Container>
@@ -226,7 +226,7 @@ export default function Pomodoro() {
 const modalStyles = {
   content: {
     width: '500px',
-    height: '500px',
+    height: '510px',
     margin: 'auto',
     padding: '0',
     borderRadius: '20px',

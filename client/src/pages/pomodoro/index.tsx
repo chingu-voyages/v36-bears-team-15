@@ -6,6 +6,10 @@ export default function Index() {
   const [shortBreakDuration, setShortBreakDuration] = useState(5);
   const [longBreakDuration, setLongBreakDuration] = useState(15);
   const [longBreakInterval, setLongBreakInterval] = useState(4);
+
+  const [isAlarmOn, setIsAlarmOn] = useState(false);
+  const [isPomodoroAutoStartOn, setIsPomodoroAutoStartOn] = useState(false);
+  const [isBreakAutoStartOn, setIsBreakAutoStartOn] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   return (
@@ -16,11 +20,17 @@ export default function Index() {
           shortBreakDuration,
           longBreakDuration,
           longBreakInterval,
+          isAlarmOn,
+          isPomodoroAutoStartOn,
+          isBreakAutoStartOn,
           showModal,
           setPomodoroDuration,
           setShortBreakDuration,
           setLongBreakDuration,
           setLongBreakInterval,
+          setIsAlarmOn,
+          setIsPomodoroAutoStartOn,
+          setIsBreakAutoStartOn,
           setShowModal,
         }}
       >
