@@ -1,12 +1,17 @@
 import * as S from './styles';
 import StyledLink from '../StyledLink';
+import React from "react";
+import {useEffect, useState} from "react";
 
-const Todo = () => (
-  <S.Wrapper>
-    <StyledLink href="/" label="Go Back Home" />
-    <h1>To-Do</h1>
-    <p>To-Do stuff will go here.</p>
-  </S.Wrapper>
-);
 
-export default Todo;
+export default function Todo() {
+  return (
+    <div>
+      <S.WhiteWrapper>
+      <StyledLink href="/" label="< Home" />
+      </S.WhiteWrapper>
+    </div>
+  )
+};
+
+
